@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <main class="main">
+        <section class="calc-imc">
+          <h1>Calculadora IMC</h1>
+          <form class="form" id="form">
+            <label for="kilos">
+              Quilos
+              <input name="kilos"  id="kilos" placeholder="Peso atual" type="number" />
+            </label>
+            <label for="altura">
+              Altura
+              <input name="altura" id="altura" placeholder="Altura em centímetros" type="number" />
+            </label>
+            <label for="imc">
+              IMC
+              <input disabled="disabled" name="imc" id="imc"/>
+            </label>
+            <button>Calcular</button>
+          </form>
+        </section>
+      </main>
+
+<style>
+
+body{background-color: #333;}
+
+.main {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+}
+
+.calc-imc {
+  padding: 1em;
+  box-shadow: 6px 6px 20px gray, -6px -6px 20px white;
+  background-color: #DFDBE5;
+}
+
+@media (min-width: 500px) {
+  .calc-imc {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    max-width: 500px;
+    width: 100%;
+    padding: 1em;
+  }
+}
+
+.calc-imc h1 {
+  text-align: center;
+  font-size: 2em;
+  text-decoration: underline;
+}
+
+.form {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  padding: 0.3em;
+}
+
+.form label,
+.form button {
+  margin-top: 1em;
+}
+
+.form input,
+.form button {
+  font-size: inherit;
+  font-family: inherit;
+  width: 100%;
+  padding: 0.5em;
+}
+
+.form button {
+  background-color: #FBEFFF;
+  cursor: pointer;
+  border-radius: 0.3em;
+  width: 50%;
+}
+
+.form button:hover {
+  filter: opacity(0.8);
+}
+
+.form button:active {
+  background-color: #FFEFFF;
+  color: #000;
+  filter: opacity(0.8);
+}
+
+
+.message {
+  display: block;
+  width: 100%;
+  height: 50px;
+  text-align: center;
+  line-height: 50px;
+  font-size: 1.2rem;
+  font-style: italic;
+  position: fixed;
+  box-shadow: 0 0 4px #333;
+}
+
+@media screen and (max-width: 500px) {
+  .message {
+    bottom: 0;
+  }
+}
+
+.sucess {
+  background-color: #2ecc71;
+  color: #fff;
+}
+
+.warning {
+  background-color: #e67e22;
+  color: #fff;
+}
+
+.alert {
+  background-color: #e74c3c;
+  color: #fff;
+}
+
+.danger {
+  background-color: #c0392b;
+  color: #fff;
+}
+</style>
+
+<script>
+
+function validaEntrada(args) {
+  for (let i = 0; i < arguments.length; i++) {
+    if (!!arguments[i] == false || arguments[i] < 0) {
+      return false;
+    }
+  }
+  return true;
+}
+
+function calcularIMC(kilos, altura) {
+  altura = altura / 100;
+  return (kilos / (altura * altura));
+}
+
+const formCalcularIMC = document.getElementById('form');
+
+formCalcularIMC.addEventListener('submit', function(event) {
+  event.preventDefault();
+
+  const kilos = parseFloat(document.getElementById('kilos').value);
+  const altura = parseFloat(document.getElementById('altura').value);
+
+  if (validaEntrada(kilos, altura)) {
+    const imc = calcularIMC(kilos, altura);
+    document.getElementById('imc').value = parseFloat(imc).toFixed(2);
+    verificarIMC(imc);
+  } else {
+    document.getElementById('imc').value = "## ERRO ##";
+  }
+});
+
+function verificarIMC(imc) {
+  if (imc < 17) {
+    createMessage("Muito abaixo do peso", "alert")
+  } else if (imc > 17 && imc <= 18.49){
+    createMessage("Abaixo do peso", "warning")
+  } else if (imc >= 18.5 && imc <= 24.99){
+    createMessage("Peso normal", "sucess")
+  } else if (imc >= 25 && imc <= 29.99){
+    createMessage("Acima do peso", "warning")
+  } else if (imc >= 30 && imc <= 34.99){
+    createMessage("Obesidade I", "alert")
+  } else {
+    createMessage("Obesidade II", "danger")
+  }
+}
+
+function createMessage(msg, type) {
+  document
+    .querySelector("body")
+    .insertAdjacentHTML("beforebegin", `<div class='message ${type}'>${msg}</div>`);
+
+  setTimeout(function () {
+    deleteMessage();
+  }, 3000);
+}
+
+function deleteMessage() {
+  const list = document.querySelectorAll(".message");
+  for (const item of list) {
+    item.remove();
+  }
+}
+</script>
+
+</body>
+</html>
